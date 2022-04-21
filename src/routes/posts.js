@@ -69,13 +69,11 @@ router.get("/", authorizedLoggedInUser, async (req, res) => {
 
 // router.get("/comments")
 
-router.get("/:id", authorizedLoggedInUser, async (req, res) => {
+router.get("/get-one-post", async (req, res) => {
   try {
-    const { id } = req.params;
-
     const findPost = await Post.findOne({
       where: {
-        id,
+        ...req.query
       },
       include: [
         {
@@ -84,17 +82,6 @@ router.get("/:id", authorizedLoggedInUser, async (req, res) => {
             exclude: ["password"],
           },
           as: "post_user",
-        },
-        {
-          model: User,
-          attributes: {
-            exclude: ["password"],
-          },
-          as: "post_like",
-          where: {
-            id: req.token.id,
-          },
-          required: false,
         },
         {
           model: Comment,
