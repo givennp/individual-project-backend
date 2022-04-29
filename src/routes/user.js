@@ -1,7 +1,51 @@
-const { User, Post } = require("../lib/sequelize");
+const { User, Post, Like } = require("../lib/sequelize");
 const fileUploader = require("../lib/uploader");
 const { authorizedLoggedInUser } = require("../middlewares/authMiddleware");
 const router = require("express").Router();
+
+router.get("/liked-post", authorizedLoggedInUser, async (req, res) => {
+  try {
+    const { user_id } = req.query
+
+    const findPost = await Like.findAndCountAll({
+      where: {
+        user_id,
+      },
+      include: [
+        {
+          model: User,
+          as: "user_like",
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+        {
+          model: Post,
+          as: "like_post",
+        },
+      ],
+    });
+
+    if(!findPost){
+      return res.status(400).json({
+        message: "user have not like any post"
+      })
+    }
+    
+    return res.status(200).json({
+      message: "get user liked post",
+      result: findPost
+    })
+
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "server error"
+    })
+
+  }
+})
 
 router.get("/:id", async (req, res) => {
   try {
@@ -14,6 +58,7 @@ router.get("/:id", async (req, res) => {
       include: [
         {
           model: Post,
+          as: "post_user"
         },
       ],
     });
@@ -68,7 +113,7 @@ router.patch(
         {
           ...req.body,
         },
-        {
+         {
           where: {
             id,
           },

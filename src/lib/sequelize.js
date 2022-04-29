@@ -46,10 +46,10 @@ User.belongsToMany(Post, {
   onDelete: "CASCADE",
   as: "post_like",
 });
-User.hasMany(Like, { foreignKey: "user_id" });
-Like.belongsTo(User, { foreignKey: "user_id" });
-Post.hasMany(Like, { foreignKey: "post_id" });
-Like.belongsTo(Post, { foreignKey: "post_id" });
+User.hasMany(Like, { foreignKey: "user_id", as: "user_like" });
+Like.belongsTo(User, { foreignKey: "user_id", as: "user_like" });
+Post.hasMany(Like, { foreignKey: "post_id", as: "like_post" });
+Like.belongsTo(Post, { foreignKey: "post_id", as: "like_post" });
 
 User.hasMany(VerificationToken, { foreignKey: "user_id", onDelete: "CASCADE" });
 VerificationToken.belongsTo(User, {

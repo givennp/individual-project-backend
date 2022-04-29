@@ -217,7 +217,7 @@ router.get("/:id/likes", async (req, res) => {
 });
 
 // like
-router.post("/:postId/likes/:userId", async (req, res) => {
+router.post("/:postId/likes/:userId", authorizedLoggedInUser, async (req, res) => {
   try {
     const { postId, userId } = req.params;
 
@@ -227,8 +227,6 @@ router.post("/:postId/likes/:userId", async (req, res) => {
         user_id: userId,
       },
     });
-
-    console.log(isLiked);
 
     if (isLiked) {
       return res.status(400).json({
@@ -264,7 +262,7 @@ router.post("/:postId/likes/:userId", async (req, res) => {
 });
 
 // remove like
-router.delete("/:postId/likes/:userId", async (req, res) => {
+router.delete("/:postId/likes/:userId", authorizedLoggedInUser, async (req, res) => {
   try {
     const { postId, userId } = req.params;
 
