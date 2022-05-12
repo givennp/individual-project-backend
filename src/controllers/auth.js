@@ -79,7 +79,7 @@ const authControllers = {
 
       const findUser = await User.findOne({
         where: {
-          username,
+          [Op.or]: [{ username }, { email: username }],
         },
       });
 
@@ -284,7 +284,7 @@ const authControllers = {
       });
 
       return res.status(201).json({
-        message: "Resent verification email",
+        message: "sent reset password email",
       });
     } catch (err) {
       console.log(err);
